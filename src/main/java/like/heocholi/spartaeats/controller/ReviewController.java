@@ -5,6 +5,8 @@ import like.heocholi.spartaeats.dto.*;
 import like.heocholi.spartaeats.security.UserDetailsImpl;
 import like.heocholi.spartaeats.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -101,5 +103,12 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
-
+    @GetMapping("/reviews/liked")
+    public Page<ReviewResponseDto> getReviewsUserLikedWithPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getCustomer().getId();
+        return reviewService.getReviewsUserLikedWithPage(userId, page-1, size);
+    }
 }
