@@ -70,7 +70,7 @@ public class StoreService {
 
     }
 
-
+    // 내가 좋아요한 가게 조회
     public List<StoreResponseDto> getStoresUserLikedWithPage(Long userId, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
 
@@ -78,6 +78,12 @@ public class StoreService {
 
         return stores.stream().map(StoreResponseDto::new).toList();
     }
+
+    // 내가 좋아요한 가게 개수 조회
+    public Long getStoresUserLikedCount(Long userId) {
+        return storeRepository.getStoresUserLikedCount(userId);
+    }
+
 
     // 페이지 유효성 검사
     private static void checkValidatePage(Integer page, Page<Store> storePageList) {

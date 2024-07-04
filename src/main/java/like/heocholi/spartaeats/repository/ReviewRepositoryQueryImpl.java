@@ -17,7 +17,7 @@ public class ReviewRepositoryQueryImpl implements ReviewRepositoryQuery {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Review> getReviewsUserLikedWithPage(Long userId, Pageable pageable) {
+    public List<Review> getReviewsUserLikedWithPage(Long userId, Pageable pageable) {
         QReview qReview = QReview.review;
         QLike qLike = QLike.like;
 
@@ -30,15 +30,20 @@ public class ReviewRepositoryQueryImpl implements ReviewRepositoryQuery {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        // 전체 리뷰 수를 가져오는 쿼리
-        long count = jpaQueryFactory
-                .select(qReview)
+        return reviews;
+    }
+
+    public Long getReviewUserLikedCount(Long userId){
+        QReview qReview = QReview.review;
+        QLike qLike = QLike.like;
+
+        Long count = jpaQueryFactory
+                .select(qLike.count())
                 .from(qReview)
                 .leftJoin(qLike).on(qReview.id.eq(qLike.review.id))
                 .where(qLike.customer.id.eq(userId).and(qLike.isLike.isTrue()))
-                .fetchCount();
+                .fetchOne();
 
-        return new PageImpl<Review>(reviews, pageable, count);
+        return count;
     }
-
 }

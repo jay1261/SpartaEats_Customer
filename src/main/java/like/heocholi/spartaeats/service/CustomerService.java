@@ -28,6 +28,9 @@ public class CustomerService {
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final StoreService storeService;
+    private final ReviewService reviewService;
+
     //회원가입 메서드
     // requestDto 회원가입 요청 DTO (SignupRequestDto)
     // String 회원가입 성공 메시지
@@ -83,7 +86,10 @@ public class CustomerService {
 
     //유저 정보 조회
     public CustomerResponseDTO getCustomerInfo(Customer customer) {
-        return new CustomerResponseDTO(customer);
+        Long storesUserLikedCount = storeService.getStoresUserLikedCount(customer.getId());
+        Long reviewUserLikedCount = reviewService.getReviewUserLikedCount(customer.getId());
+
+        return new CustomerResponseDTO(customer, storesUserLikedCount, reviewUserLikedCount);
     }
 
 

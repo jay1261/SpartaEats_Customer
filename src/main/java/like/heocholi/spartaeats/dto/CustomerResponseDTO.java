@@ -9,11 +9,15 @@ public class CustomerResponseDTO {
     private String name;
     private String address;
     private String bio;
+    private Long storeLikeCount;
+    private Long reviewLikeCount;
 
-    public CustomerResponseDTO(Customer customer) {
+    public CustomerResponseDTO(Customer customer, Long storeLikeCount, Long reviewLikeCount) {
         this.customerId = customer.getUserId();
         this.name = customer.getName();
         this.address = customer.getAddress();
         this.bio = customer.getBio();
+        this.storeLikeCount = storeLikeCount;
+        this.reviewLikeCount = reviewLikeCount;
     }
 }

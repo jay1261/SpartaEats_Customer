@@ -12,4 +12,6 @@ import java.util.List;
 
 public interface StoreRepositoryQuery {
     List<Store> getStoresUserLikedWithPage(Long userId, Pageable pageable);
+
+    Long getStoresUserLikedCount(Long userId);
 }

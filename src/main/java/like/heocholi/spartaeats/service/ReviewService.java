@@ -15,6 +15,7 @@ import like.heocholi.spartaeats.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -99,17 +100,25 @@ public class ReviewService {
         return review.getId();
     }
 
+    // 내가 좋아요한 댓글 조회
     public Page<ReviewResponseDto> getReviewsUserLikedWithPage(Long userId, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Review> reviewsUserLikedWithPage = reviewRepository.getReviewsUserLikedWithPage(userId, pageable);
+        List<Review> reviews = reviewRepository.getReviewsUserLikedWithPage(userId, pageable);
+        List<ReviewResponseDto> reviewResponseDtoList = reviews.stream().map(ReviewResponseDto::new).toList();
 
-        return reviewsUserLikedWithPage.map(ReviewResponseDto::new);
+        Long count = getReviewUserLikedCount(userId);
+
+        return new PageImpl<ReviewResponseDto>(reviewResponseDtoList, pageable, count);
+    }
+
+    // // 내가 좋아요한 댓글 개수 조회
+    public Long getReviewUserLikedCount(Long userId) {
+        return reviewRepository.getReviewUserLikedCount(userId);
     }
 
 
     /* Util */
-
     public Review findReviewByIdAndCustomercheck(Long reviewId, Customer customer) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ReviewException(ErrorType.NOT_FOUND_REVIEW)
