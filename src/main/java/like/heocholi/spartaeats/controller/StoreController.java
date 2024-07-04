@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stores")
@@ -64,5 +66,11 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
     }
 
-
+    @GetMapping("/liked/{userId}")
+    public List<StoreResponseDto> getStoresUserLikedWithPage(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size){
+        return storeService.getStoresUserLikedWithPage(userId, page-1, size);
+    }
 }

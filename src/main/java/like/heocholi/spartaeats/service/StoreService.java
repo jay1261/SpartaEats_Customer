@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +68,15 @@ public class StoreService {
         Pick pick = updatePick(store, customer);
         return new PickStoreResponseDto(store.getName(), pick.isPick());
 
+    }
+
+
+    public List<StoreResponseDto> getStoresUserLikedWithPage(Long userId, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<Store> stores = storeRepository.getStoresUserLikedWithPage(userId, pageable);
+
+        return stores.stream().map(StoreResponseDto::new).toList();
     }
 
     // 페이지 유효성 검사
