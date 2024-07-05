@@ -1,16 +1,21 @@
 package like.heocholi.spartaeats.service;
 
 import like.heocholi.spartaeats.constants.ErrorType;
+import like.heocholi.spartaeats.dto.StoreResponseDto;
 import like.heocholi.spartaeats.entity.Customer;
 import like.heocholi.spartaeats.entity.Follow;
 import like.heocholi.spartaeats.entity.Manager;
+import like.heocholi.spartaeats.entity.Store;
 import like.heocholi.spartaeats.exception.FollowException;
 import like.heocholi.spartaeats.repository.FollowRepository;
 import like.heocholi.spartaeats.repository.ManagerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,4 +47,12 @@ public class FollowService {
         return  "id: "+  savedFollow.getManager().getId() + " 매니저를 팔로우 했습니다.";
     }
 
+    public List<StoreResponseDto> getFollowedUsersStores(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<Store> storeList = followRepository.getFollowedManagersStoresWithPage(userId, pageable);
+        List<StoreResponseDto> responseDtoList = storeList.stream().map(StoreResponseDto::new).toList();
+
+        return responseDtoList;
+    }
 }
