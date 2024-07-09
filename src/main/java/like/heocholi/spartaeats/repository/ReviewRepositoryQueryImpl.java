@@ -34,13 +34,11 @@ public class ReviewRepositoryQueryImpl implements ReviewRepositoryQuery {
     }
 
     public Long getReviewUserLikedCount(Long userId){
-        QReview qReview = QReview.review;
         QLike qLike = QLike.like;
 
         Long count = jpaQueryFactory
                 .select(qLike.count())
-                .from(qReview)
-                .leftJoin(qLike).on(qReview.id.eq(qLike.review.id))
+                .from(qLike)
                 .where(qLike.customer.id.eq(userId).and(qLike.isLike.isTrue()))
                 .fetchOne();
 

@@ -33,13 +33,11 @@ public class StoreRepositoryQueryImpl implements StoreRepositoryQuery {
     }
 
     public Long getStoresUserLikedCount(Long userId){
-        QStore qStore = QStore.store;
         QPick qPick = QPick.pick;
 
         return jpaQueryFactory
                 .select(qPick.count())
-                .from(qStore)
-                .join(qPick).on(qStore.id.eq(qPick.store.id))
+                .from(qPick)
                 .where(qPick.customer.id.eq(userId).and(qPick.isPick.isTrue()))
                 .fetchOne();
     }
